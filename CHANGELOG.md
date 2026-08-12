@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- Map auto-centering now keeps route points clear of the map toolbar (#3342)
+
 ## [1.11.0] - 2026-08-02, Berlin
 
 ### Added
