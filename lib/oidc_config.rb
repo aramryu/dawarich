@@ -28,11 +28,12 @@ module OidcConfig
 
     issuer = normalize_issuer(env['OIDC_ISSUER'].to_s)
 
-    if issuer != ''
-      config[:issuer] = issuer
-      config[:discovery] = true
-    elsif env['OIDC_HOST'].to_s.strip != ''
+    config[:issuer] = issuer if issuer != ''
+
+    if env['OIDC_HOST'].to_s.strip != ''
       config[:client_options].merge!(manual_endpoints(env))
+    elsif issuer != ''
+      config[:discovery] = true
     end
 
     config
