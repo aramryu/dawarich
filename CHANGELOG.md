@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- Renamed imports download using their current name and client-wrapped files retain their original format (#3455)
+
 ## [1.14.3] - 2026-09-05, Berlin
 
 ### Added
