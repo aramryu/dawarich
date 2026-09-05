@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- Password-protected shared links now unlock on self-hosted HTTP servers (#3314)
+
 ## [1.14.3] - 2026-09-05, Berlin
 
 ### Added
