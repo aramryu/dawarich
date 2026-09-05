@@ -1,7 +1,0 @@
-en:
-  imports:
-    download:
-      preparing: Preparing your download
-      automatic_download: Your download will start automatically when it is ready. You can also download the original archive below.
-      original_archive: Download original archive
-      back: Back to imports
