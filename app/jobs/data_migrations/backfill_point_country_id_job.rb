@@ -120,16 +120,17 @@ class DataMigrations::BackfillPointCountryIdJob < ApplicationJob
   def resolve_countries(start_id, end_id, repair_collisions: false)
     predicate = if repair_collisions
                   <<~SQL.squish
-                    p.country_id IS NOT NULL
-                    AND p.country_id <> c.id
-                    AND current_country.id = p.country_id
-                    AND target_country.id = c.id
-                    AND current_country.iso_a2 = target_country.iso_a2
+                    (p.country_id IS NULL OR (
+                      p.country_id <> c.id AND EXISTS (
+                        SELECT 1 FROM countries current_country
+                        JOIN countries target_country ON target_country.iso_a2 = current_country.iso_a2
+                        WHERE current_country.id = p.country_id AND target_country.id = c.id
+                      )
+                    ))
                   SQL
                 else
                   'p.country_id IS NULL'
                 end
-    country_joins = ', countries current_country, countries target_country' if repair_collisions
 
     execute_sanitized(<<~SQL.squish, start_id, end_id).cmd_tuples
       UPDATE points p
@@ -145,7 +146,6 @@ class DataMigrations::BackfillPointCountryIdJob < ApplicationJob
         ) named
         GROUP BY name
       ) c
-      #{country_joins}
       WHERE p.id BETWEEN ? AND ?
         AND #{predicate}
         AND c.name = COALESCE(p.country_name, p.country)
