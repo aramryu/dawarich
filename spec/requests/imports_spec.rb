@@ -87,7 +87,7 @@ RSpec.describe 'Imports', type: :request do
       before { sign_in user }
 
       it 'downloads the extracted inner file using the renamed import name' do
-        get download_import_path(import)
+        prepare_and_download(import)
 
         expect(response).to have_http_status(:ok)
         expect(response.headers['Content-Disposition']).to include('filename="holiday.gpx"')
@@ -99,8 +99,7 @@ RSpec.describe 'Imports', type: :request do
         stub_const('Archive::Unzipper::MAX_EXTRACTED_SIZE', 8)
         original = import.file.blob.download
 
-        get download_import_path(import)
-        follow_redirect! while response.redirect?
+        prepare_and_download(import)
 
         expect(response).to have_http_status(:ok)
         expect(response.headers['Content-Disposition']).to include('filename="holiday.gpx.zip"')
@@ -111,10 +110,32 @@ RSpec.describe 'Imports', type: :request do
       it 'restores the inner extension of a legacy timestamp-suffixed wrapper name' do
         import.update!(name: 'original.gpx_20260801_120000.zip')
 
-        get download_import_path(import)
+        prepare_and_download(import)
 
         expect(response).to have_http_status(:ok)
         expect(response.headers['Content-Disposition']).to include('filename="original_20260801_120000.gpx"')
+        expect(response.body).to eq(gpx_content)
+      end
+
+      it 'queues preparation and responds before downloading or extracting the archive' do
+        expect { get download_import_path(import) }
+          .to have_enqueued_job(Imports::PrepareDownloadJob).with(import.id, import.file.blob_id)
+
+        expect(response).to have_http_status(:accepted)
+        expect(response.headers['Refresh']).to eq('3')
+        expect(import.reload.prepared_download).not_to be_attached
+        expect(response.body).to include('Download original archive')
+        expect { get download_import_path(import) }.not_to have_enqueued_job(Imports::PrepareDownloadJob)
+      end
+
+      it 'uses the latest rename after the download has already been prepared' do
+        prepare_and_download(import)
+        import.update!(name: 'new-holiday.gpx')
+
+        get download_import_path(import)
+        follow_redirect! while response.redirect?
+
+        expect(response.headers['Content-Disposition']).to include('filename="new-holiday.gpx"')
         expect(response.body).to eq(gpx_content)
       end
 
@@ -160,11 +181,30 @@ RSpec.describe 'Imports', type: :request do
       end
 
       it 'detects the wrapper and downloads the inner KML with its original filename' do
-        get download_import_path(import)
+        prepare_and_download(import)
 
         expect(response).to have_http_status(:ok)
         expect(response.headers['Content-Disposition']).to include('filename="route.kml"')
         expect(response.body).to eq(kml_content)
+      end
+    end
+
+    context 'when an unmarked legacy ZIP contains multiple files' do
+      let(:import) { create(:import, user: user, name: 'renamed.gpx.zip') }
+      let(:zip_path) { create_zip('a.gpx' => gpx_content, 'b.gpx' => gpx_content) }
+
+      before do
+        import.file.purge
+        import.file.attach(io: File.open(zip_path), filename: 'original.gpx.zip', content_type: 'application/zip')
+        sign_in user
+      end
+
+      it 'preserves the current name and complete original archive' do
+        original = import.file.blob.download
+        prepare_and_download(import)
+
+        expect(response.headers['Content-Disposition']).to include('filename="renamed.gpx.zip"')
+        expect(response.body.b).to eq(original.b)
       end
     end
 
@@ -442,6 +482,15 @@ RSpec.describe 'Imports', type: :request do
     )
   ensure
     File.delete(path) if path && File.exist?(path)
+  end
+
+  def prepare_and_download(import)
+    perform_enqueued_jobs(only: Imports::PrepareDownloadJob) do
+      get download_import_path(import)
+      expect(response).to have_http_status(:accepted)
+    end
+    get download_import_path(import)
+    follow_redirect! while response.redirect?
   end
 
   def upload_descriptor(blob, original_filename, client_wrapped)

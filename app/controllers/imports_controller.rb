@@ -31,21 +31,15 @@ class ImportsController < ApplicationController
   def show; end
 
   def download
-    return redirect_to_stored_file unless wrapped_file_candidate?
+    @download = Imports::Download.new(@import)
+    return redirect_to @download.url, allow_other_host: true if @download.ready?
 
-    archive_path = Imports::SecureFileDownloader.new(@import.file).download_to_temp_file
-    archive = Archive::Unzipper.inspect_archive(archive_path)
-
-    return redirect_to_stored_file(filename: @import.file.blob.filename.to_s) unless wrapped_archive?(archive)
-
-    extracted_path = Archive::Unzipper.extract_single(archive_path)
-    stream_extracted_file(extracted_path, archive_path)
-    extracted_path = archive_path = nil
-  rescue Archive::Unzipper::ArchiveTooLarge
-    redirect_to_stored_file(filename: "#{@import.name.delete_suffix('.zip')}.zip")
-  ensure
-    cleanup_download_file(extracted_path)
-    cleanup_download_file(archive_path)
+    Rails.cache.fetch(['import-download', @import.id, @import.file.blob_id], expires_in: 1.minute) do
+      Imports::PrepareDownloadJob.perform_later(@import.id, @import.file.blob_id)
+      true
+    end
+    response.set_header('Refresh', '3')
+    render :download, status: :accepted
   end
 
   def edit; end
@@ -187,77 +181,6 @@ status: :unprocessable_content and return
     metadata = blob.metadata.merge(CLIENT_WRAPPED_METADATA_KEY => wrapped)
     metadata[ORIGINAL_FILENAME_METADATA_KEY] = blob.filename.to_s.delete_suffix('.zip') if wrapped
     blob.update!(metadata:)
-  end
-
-  def wrapped_file_candidate?
-    metadata = @import.file.blob.metadata
-    return metadata[CLIENT_WRAPPED_METADATA_KEY] if metadata.key?(CLIENT_WRAPPED_METADATA_KEY)
-
-    legacy_wrapped_filename.present?
-  end
-
-  def wrapped_archive?(archive)
-    return false unless archive.kind == :single_entry
-
-    expected_filename = @import.file.blob.metadata[ORIGINAL_FILENAME_METADATA_KEY] || legacy_wrapped_filename
-    archive.entry_name == expected_filename
-  end
-
-  def legacy_wrapped_filename
-    filename = @import.file.blob.filename.to_s
-    return unless filename.end_with?('.zip')
-
-    inner_filename = filename.delete_suffix('.zip')
-    return unless Imports::ZipExtractor::SUPPORTED_EXTENSIONS.include?(File.extname(inner_filename).downcase)
-
-    inner_filename
-  end
-
-  def redirect_to_stored_file(filename: @import.name)
-    redirect_to @import.file.url(filename:, disposition: :attachment), allow_other_host: true
-  end
-
-  def stream_extracted_file(extracted_path, archive_path)
-    filename = extracted_download_filename
-    send_file_headers!(
-      filename:,
-      type: Marcel::MimeType.for(Pathname.new(extracted_path), name: filename),
-      disposition: :attachment
-    )
-    self.status = :ok
-
-    stream = Enumerator.new do |output|
-      File.open(extracted_path, 'rb') do |file|
-        while (chunk = file.read(64.kilobytes))
-          output << chunk
-        end
-      end
-    ensure
-      cleanup_download_file(extracted_path)
-      cleanup_download_file(archive_path)
-    end
-
-    self.response_body = Rack::BodyProxy.new(stream) do
-      cleanup_download_file(extracted_path)
-      cleanup_download_file(archive_path)
-    end
-  end
-
-  def cleanup_download_file(path)
-    File.unlink(path) if path && File.exist?(path)
-  end
-
-  def extracted_download_filename
-    original = @import.file.blob.metadata[ORIGINAL_FILENAME_METADATA_KEY] || legacy_wrapped_filename
-    return original if @import.name == @import.file.blob.filename.to_s
-
-    suffix = @import.name.delete_prefix(original.to_s)
-    if original && suffix.match?(/\A_\d{8}_\d{6}\.zip\z/)
-      extension = File.extname(original)
-      return "#{original.delete_suffix(extension)}#{suffix.delete_suffix('.zip')}#{extension}"
-    end
-
-    @import.name
   end
 
   def generate_unique_import_name(original_name)
