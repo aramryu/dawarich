@@ -21,7 +21,7 @@ RSpec.describe EnqueueCountryCodeCollisionRepair do
       )
   end
 
-  it 'leaves fresh installs to the original country backfill' do
+  it 'leaves unstarted source backfills to their country-repair handoff' do
     PointSource.delete_all
 
     expect { migration.up }.not_to have_enqueued_job(DataMigrations::BackfillPointCountryIdJob)
