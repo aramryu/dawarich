@@ -60,4 +60,22 @@ RSpec.describe 'Remembering a two-factor sign-in', type: :request do
       expect(response.cookies['remember_user_token']).to be_blank
     end
   end
+
+  it 'restores a remembered sign-in in a new browser session only after completing OTP' do
+    post user_session_path,
+         params: { user: { email: user.email, password: password, remember_me: '1' } }
+    get imports_path
+    expect(response).to redirect_to(new_user_session_path)
+
+    post user_otp_challenge_path, params: { otp_attempt: user.current_otp }
+    remember_cookie = cookies['remember_user_token']
+    expect(remember_cookie).to be_present
+
+    returning_browser = ActionDispatch::Integration::Session.new(Rails.application)
+    returning_browser.cookies['remember_user_token'] = remember_cookie
+    returning_browser.get imports_path
+
+    expect(returning_browser.response).to have_http_status(:ok)
+  end
+
 end
