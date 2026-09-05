@@ -38,15 +38,21 @@ class Imports::Download
     return attach_original unless archive.kind == :single_entry && archive.entry_name == original_filename
 
     extracted_path = Archive::Unzipper.extract_single(archive_path)
+    prepared = nil
     File.open(extracted_path, 'rb') do |file|
-      import.prepared_download.attach(
+      prepared = ActiveStorage::Blob.create_after_unfurling!(
         io: file, filename: original_filename,
         content_type: Marcel::MimeType.for(Pathname.new(extracted_path), name: original_filename),
         metadata: { SOURCE_BLOB_KEY => source.id }
       )
+      prepared.upload_without_unfurling(file)
+      import.prepared_download.attach(prepared)
     end
   rescue Archive::Unzipper::ArchiveTooLarge
     attach_original
+  rescue StandardError
+    prepared&.purge_later if prepared && !prepared.attachments.exists?
+    raise
   ensure
     File.unlink(extracted_path) if extracted_path && File.exist?(extracted_path)
     File.unlink(archive_path) if archive_path && File.exist?(archive_path)
