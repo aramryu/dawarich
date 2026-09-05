@@ -77,5 +77,4 @@ RSpec.describe 'Remembering a two-factor sign-in', type: :request do
 
     expect(returning_browser.response).to have_http_status(:ok)
   end
-
 end
