@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- Reverse geocoding resolves countries sharing an ISO code correctly and repairs historical links (#3462)
+
 ## [1.14.3] - 2026-09-05, Berlin
 
 ### Added
