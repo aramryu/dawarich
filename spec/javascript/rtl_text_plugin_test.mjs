@@ -28,7 +28,7 @@ test("registers the local worker plugin once across repeated map initializations
   assert.deepEqual(requests, [["/assets/rtl-digest.js", true]])
 })
 
-for (const status of ["deferred", "loading", "loaded"]) {
+for (const status of ["deferred", "loading", "loaded", "error"]) {
   test(`keeps an existing ${status} registration`, () => {
     registerRTLTextPlugin(
       {
@@ -40,17 +40,32 @@ for (const status of ["deferred", "loading", "loaded"]) {
   })
 }
 
-test("contains loading failures and allows retry on the next map", async (t) => {
-  t.mock.method(console, "warn", () => {})
-  let calls = 0
-  const maplibre = {
-    getRTLTextPluginStatus: () => "error",
-    setRTLTextPlugin: async () => {
-      calls++
-      if (calls === 1) throw new Error("offline")
+test("registers after a different map requested RTL text", async () => {
+  let registered = false
+  await registerRTLTextPlugin(
+    {
+      getRTLTextPluginStatus: () => "requested",
+      setRTLTextPlugin: async () => {
+        registered = true
+      },
     },
-  }
-  await assert.doesNotReject(registerRTLTextPlugin(maplibre, "/assets/rtl.js"))
-  await assert.doesNotReject(registerRTLTextPlugin(maplibre, "/assets/rtl.js"))
-  assert.equal(calls, 2)
+    "/assets/rtl.js",
+  )
+  assert.equal(registered, true)
+})
+
+test("contains asynchronous plugin loading failures", async (t) => {
+  const warning = t.mock.method(console, "warn", () => {})
+  await assert.doesNotReject(
+    registerRTLTextPlugin(
+      {
+        getRTLTextPluginStatus: () => "unavailable",
+        setRTLTextPlugin: async () => {
+          throw new Error("offline")
+        },
+      },
+      "/assets/rtl.js",
+    ),
+  )
+  assert.equal(warning.mock.callCount(), 1)
 })
