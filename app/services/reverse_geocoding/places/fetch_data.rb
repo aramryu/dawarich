@@ -251,6 +251,7 @@ class ReverseGeocoding::Places::FetchData
     # Try the place type key first (e.g., address['restaurant'] for type=restaurant)
     name = address[data['type']] if data['type']
     # Fall back to first part of display_name (the most specific part)
-    name || data['display_name']&.split(',')&.first&.strip
+    name ||= data['display_name']&.split(',')&.first&.strip
+    name unless name == address['house_number']
   end
 end

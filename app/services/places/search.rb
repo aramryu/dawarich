@@ -44,7 +44,7 @@ module Places
       results = Geocoding::Search
                 .call(user: @user, query: @query, limit: FETCH_LIMIT,
                       max_wait: Geocoding::RateLimiter::MAX_INTERACTIVE_WAIT,
-                      bias: { latitude: @latitude, longitude: @longitude })
+                      **geographic_options)
       return [] if results.nil?
 
       results
@@ -53,6 +53,14 @@ module Places
         .sort_by { |place| place[:distance] }
         .first(@limit)
         .map { |place| place.except(:distance) }
+    end
+
+    def geographic_options
+      provider = Geocoding::Config.for(@user).provider
+      return { bias: { latitude: @latitude, longitude: @longitude } } unless %i[nominatim locationiq].include?(provider)
+
+      south, west, north, east = Geocoder::Calculations.bounding_box([@latitude, @longitude], @radius, units: :km)
+      { params: { viewbox: [west, north, east, south].join(','), bounded: 1 } }
     end
 
     def within_radius(place)
