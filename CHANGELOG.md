@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Place tag filters remain applied after returning to the map or reloading it (#3003, #2928).
+
 - Upgrades rebuild invalid statistics indexes left by interrupted migrations and restore duplicate protection (#2700)
 - Browser and API password sign-in now respect OIDC-only configuration (#2961)
 
