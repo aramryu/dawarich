@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Manual OIDC endpoints and signing keys can be configured without changing existing discovery setups (#3390).
+
 - Upgrades rebuild invalid statistics indexes left by interrupted migrations and restore duplicate protection (#2700)
 - Browser and API password sign-in now respect OIDC-only configuration (#2961)
 
