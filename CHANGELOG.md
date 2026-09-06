@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Self-hosted photo integrations accept container host-gateway addresses while Cloud restrictions stay in place (#3005).
 - Hebrew and Arabic map labels render in the correct reading order (#3530).
 - Self-hosters can configure SMTP certificate verification for a local mail relay (#2681).
 - Live map updates respect a selected historical date range (#3098).
