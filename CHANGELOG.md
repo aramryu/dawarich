@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Place tag filters remain applied after returning to the map or reloading it (#3003, #2928).
+- Self-hosted photo integrations accept container host-gateway addresses while Cloud restrictions stay in place (#3005).
+- Hebrew and Arabic map labels render in the correct reading order (#3530).
+- Self-hosters can configure SMTP certificate verification for a local mail relay (#2681).
+- Live map updates respect a selected historical date range (#3098).
+- Statistics include valid segments crossing midnight and older calculations are scheduled for repair (#2843).
+- GPX imports work when the optional decimal elevation column is absent (#2721, #3046).
+- Map auto-centering keeps route points clear of the toolbar (#3342).
 
 - Per-tracker migrations retry deferred track recalculation instead of reporting premature success. (#3556)
 - User archive restoration enforces ZIP extraction limits against actual output size. (#3555)
