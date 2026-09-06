@@ -32,7 +32,7 @@ module Auth
     PROVIDERS_REQUIRING_EMAIL = %w[apple].freeze
 
     def initialize(provider:, provider_label:, claims:, email_verified:, name_attrs: nil,
-                   on_email_collision: :send_email)
+                   on_email_collision: :send_email, allow_registration: true)
       @provider = provider
       @provider_label = provider_label
       @claims = claims
@@ -41,6 +41,7 @@ module Auth
       @email_verified = email_verified
       @name_attrs = name_attrs || {}
       @on_email_collision = on_email_collision
+      @allow_registration = allow_registration
     end
 
     def call
@@ -55,6 +56,8 @@ module Auth
         raise AccountPendingDeletion if existing&.deleted?
         return handle_email_collision(existing) if existing
       end
+
+      return [nil, false] unless @allow_registration
 
       [create_new_user, true]
     rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid => e
