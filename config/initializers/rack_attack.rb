@@ -49,6 +49,12 @@ rescue *UNPARSEABLE_BODY_ERRORS
   {}
 end
 
+# Rails routes accept an optional (.:format) suffix, while Rack sees the raw
+# path before routing. Share counters across formats without matching child paths.
+def throttle_path(request)
+  request.path.sub(%r{\.[^/.]+\z}, '')
+end
+
 def request_api_key(request)
   safe_params(request)['api_key'] || bearer_token(request.get_header('HTTP_AUTHORIZATION'))
 end
@@ -135,7 +141,7 @@ POINTS_CREATION_PATHS = %w[
 ].freeze
 
 Rack::Attack.throttle('api/points_creation', limit: 10_000, period: 1.hour) do |req|
-  next unless req.post? && POINTS_CREATION_PATHS.include?(req.path)
+  next unless req.post? && POINTS_CREATION_PATHS.include?(throttle_path(req))
   next if DawarichSettings.self_hosted?
 
   api_key = request_api_key(req)
@@ -154,7 +160,7 @@ HEAVY_RECOMPUTE_PATHS = %w[
 ].freeze
 
 Rack::Attack.throttle('api/heavy_recompute', limit: 5, period: 1.hour) do |req|
-  next unless req.post? && HEAVY_RECOMPUTE_PATHS.include?(req.path)
+  next unless req.post? && HEAVY_RECOMPUTE_PATHS.include?(throttle_path(req))
   next if DawarichSettings.self_hosted?
 
   api_key = request_api_key(req)
@@ -165,13 +171,13 @@ end
 
 # Login brute-force protection: 5 attempts per email per minute, 20 per IP per minute.
 Rack::Attack.throttle('logins/email', limit: 5, period: 1.minute) do |req|
-  next unless req.path == '/users/sign_in' && req.post?
+  next unless throttle_path(req) == '/users/sign_in' && req.post?
 
   safe_params(req).dig('user', 'email')&.downcase&.strip
 end
 
 Rack::Attack.throttle('logins/ip', limit: 20, period: 1.minute) do |req|
-  next unless req.path == '/users/sign_in' && req.post?
+  next unless throttle_path(req) == '/users/sign_in' && req.post?
 
   req.ip
 end
@@ -182,14 +188,14 @@ end
 # would otherwise bypass the Devise web throttles entirely.
 Rack::Attack.throttle('logins/api_email', limit: 5, period: 1.minute) do |req|
   next if DawarichSettings.self_hosted?
-  next unless req.path == '/api/v1/auth/login' && req.post?
+  next unless throttle_path(req) == '/api/v1/auth/login' && req.post?
 
   safe_params(req)['email']&.to_s&.downcase&.strip
 end
 
 Rack::Attack.throttle('logins/api_ip', limit: 20, period: 1.minute) do |req|
   next if DawarichSettings.self_hosted?
-  next unless req.path == '/api/v1/auth/login' && req.post?
+  next unless throttle_path(req) == '/api/v1/auth/login' && req.post?
 
   req.ip
 end
@@ -197,33 +203,33 @@ end
 Rack::Attack.throttle('signups/api_ip_burst', limit: 5, period: 1.minute) do |req|
   next if DawarichSettings.self_hosted?
 
-  req.ip if req.path == '/api/v1/auth/register' && req.post?
+  req.ip if throttle_path(req) == '/api/v1/auth/register' && req.post?
 end
 
 Rack::Attack.throttle('signups/api_ip_hourly', limit: 20, period: 1.hour) do |req|
   next if DawarichSettings.self_hosted?
 
-  req.ip if req.path == '/api/v1/auth/register' && req.post?
+  req.ip if throttle_path(req) == '/api/v1/auth/register' && req.post?
 end
 
 Rack::Attack.throttle('oauth/token_exchange', limit: 30, period: 1.minute) do |req|
   next if DawarichSettings.self_hosted?
   next unless req.post?
-  next unless ['/api/v1/auth/apple', '/api/v1/auth/google'].include?(req.path)
+  next unless ['/api/v1/auth/apple', '/api/v1/auth/google'].include?(throttle_path(req))
 
   req.ip
 end
 
 Rack::Attack.throttle('apple_web_callback_per_ip', limit: 20, period: 1.minute) do |req|
   next if DawarichSettings.self_hosted?
-  next unless req.path == '/users/auth/apple/callback' && req.post?
+  next unless throttle_path(req) == '/users/auth/apple/callback' && req.post?
 
   req.ip
 end
 
 Rack::Attack.throttle('users/exist', limit: 600, period: 1.hour) do |req|
   next if DawarichSettings.self_hosted?
-  next unless req.path == '/api/v1/users/exist' && req.post?
+  next unless throttle_path(req) == '/api/v1/users/exist' && req.post?
 
   secret = req.get_header('HTTP_X_WEBHOOK_SECRET').to_s
   Digest::SHA256.hexdigest(secret)[0, 32] if secret.present?
@@ -236,7 +242,7 @@ end
 Rack::Attack.throttle('api/auth/otp_challenge_token', limit: 5, period: 15.minutes) do |req|
   next if DawarichSettings.self_hosted?
 
-  if req.path == '/api/v1/auth/otp_challenge' && req.post?
+  if throttle_path(req) == '/api/v1/auth/otp_challenge' && req.post?
     token = safe_params(req)['challenge_token'].to_s
     Digest::SHA256.hexdigest(token)[0, 32] if token.present?
   end
@@ -245,29 +251,29 @@ end
 Rack::Attack.throttle('api/auth/otp_challenge', limit: 5, period: 15.minutes) do |req|
   next if DawarichSettings.self_hosted?
 
-  req.ip if req.path == '/api/v1/auth/otp_challenge' && req.post?
+  req.ip if throttle_path(req) == '/api/v1/auth/otp_challenge' && req.post?
 end
 
 Rack::Attack.throttle('users/otp_challenge_session', limit: 5, period: 15.minutes) do |req|
-  next unless req.path == '/users/otp_challenge' && req.post?
+  next unless throttle_path(req) == '/users/otp_challenge' && req.post?
 
   session_id = req.env['rack.session']&.[](:otp_user_id)
   session_id || req.ip
 end
 
 Rack::Attack.throttle('users/otp_challenge_ip', limit: 20, period: 15.minutes) do |req|
-  req.ip if req.path == '/users/otp_challenge' && req.post?
+  req.ip if throttle_path(req) == '/users/otp_challenge' && req.post?
 end
 
 Rack::Attack.throttle('auth/account_link_challenge_session', limit: 5, period: 15.minutes) do |req|
-  next unless req.path == '/auth/account_link/challenge' && req.post?
+  next unless throttle_path(req) == '/auth/account_link/challenge' && req.post?
 
   pending = req.env['rack.session']&.[](:pending_oauth_link)
   pending.is_a?(Hash) ? pending['user_id'] : req.ip
 end
 
 Rack::Attack.throttle('auth/account_link_challenge_ip', limit: 20, period: 15.minutes) do |req|
-  req.ip if req.path == '/auth/account_link/challenge' && req.post?
+  req.ip if throttle_path(req) == '/auth/account_link/challenge' && req.post?
 end
 
 # 2FA management (disable / confirm / backup_codes) brute-force protection.
@@ -283,7 +289,7 @@ SENSITIVE_2FA_PATHS = %w[
 Rack::Attack.throttle('api/users/two_factor_sensitive', limit: 5, period: 15.minutes) do |req|
   next if DawarichSettings.self_hosted?
   next unless req.post? || req.delete?
-  next unless SENSITIVE_2FA_PATHS.include?(req.path)
+  next unless SENSITIVE_2FA_PATHS.include?(throttle_path(req))
 
   api_key = request_api_key(req)
   next if api_key.blank?
@@ -292,19 +298,19 @@ Rack::Attack.throttle('api/users/two_factor_sensitive', limit: 5, period: 15.min
 end
 
 Rack::Attack.throttle('trial/welcome', limit: 30, period: 1.minute) do |req|
-  next unless req.path == '/trial/welcome' && req.get?
+  next unless throttle_path(req) == '/trial/welcome' && req.get?
 
   req.ip
 end
 
 Rack::Attack.throttle('signups/ip_burst', limit: 5, period: 1.minute) do |req|
-  next unless req.path == '/users' && req.post?
+  next unless throttle_path(req) == '/users' && req.post?
 
   req.ip
 end
 
 Rack::Attack.throttle('signups/ip_hourly', limit: 20, period: 1.hour) do |req|
-  next unless req.path == '/users' && req.post?
+  next unless throttle_path(req) == '/users' && req.post?
 
   req.ip
 end
@@ -335,12 +341,12 @@ Rack::Attack.throttle('shared_links/cable',
                       period: 1.minute) do |req|
   next if DawarichSettings.self_hosted?
 
-  req.ip if req.path == '/cable' && safe_params(req)['share_id'].present?
+  req.ip if throttle_path(req) == '/cable' && safe_params(req)['share_id'].present?
 end
 
 # Magic-phrase unlock attempts: 5 per (IP, link) per 5 minutes.
 Rack::Attack.throttle('shared_links/unlock', limit: 5, period: 5.minutes) do |req|
-  if req.post? && (match = req.path.match(%r{\A/s/([^/]+)/unlock\z}))
+  if req.post? && (match = throttle_path(req).match(%r{\A/s/([^/]+)/unlock\z}))
     "#{req.ip}:#{match[1]}"
   end
 end
