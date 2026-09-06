@@ -113,15 +113,24 @@ module Tracks::TrackBuilder
   # metadata. Filtering only the final UPDATE would leave a phantom path/track.
   # Boundary merges deliberately use the default path to move owned points.
   def create_track_from_orphan_points(points, tracker_id:, skip_segment_detection:)
-    Point.transaction do
+    singleton = nil
+    track = Point.transaction do
       orphans = Point.where(user_id: user.id, id: points.map(&:id), track_id: nil)
                      .order(:id).lock.to_a.sort_by { |point| [point.timestamp, point.id] }
-      next if orphans.size < 2
+      if orphans.one?
+        singleton = orphans.first
+        next
+      end
+      next if orphans.empty?
 
       distance = Point.calculate_distance_for_array_geocoder(orphans, :m)
       create_track_from_points(orphans, distance, tracker_id: tracker_id,
                                skip_segment_detection: skip_segment_detection)
     end
+
+    return track unless singleton
+
+    Tracks::OrphanPointAttacher.new(user, singleton, points).call
   end
 
   def reuse_existing_track(track, points, original_error)

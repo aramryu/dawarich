@@ -6,8 +6,9 @@ RSpec.describe 'Chunk overlap point ownership' do
   let(:user) { create(:user, settings: { 'minutes_between_routes' => 60 }) }
   let(:day_start) { Time.utc(2026, 1, 14) }
   let(:session) { Tracks::SessionManager.new(user.id) }
+  let(:hours) { 22..34 }
   let!(:points) do
-    (22..34).map do |hour|
+    hours.map do |hour|
       create(:point, user: user, timestamp: (day_start + hour.hours).to_i,
                      latitude: 40.0 + hour * 0.01, longitude: 0, altitude: 100)
     end
@@ -54,6 +55,24 @@ RSpec.describe 'Chunk overlap point ownership' do
         timestamps = track.points.order(:timestamp).pluck(:timestamp)
         expect(track.start_at.to_i).to eq(timestamps.first)
         expect(track.end_at.to_i).to eq(timestamps.last)
+      end
+    end
+  end
+  [22..31, 17..26].each do |range|
+    context "when a single endpoint remains in hours #{range}" do
+      let(:hours) { range }
+
+      [[0, 1], [1, 0]].each do |order|
+        it "includes the terminal point with chunk order #{order}" do
+          order.each do |index|
+            Tracks::TimeChunkProcessorJob.new.perform(user.id, session.session_id, chunk(index))
+          end
+          Tracks::BoundaryResolverJob.new.perform(user.id, session.session_id)
+
+          expect(user.points.where(track_id: nil)).not_to exist
+          expect(user.tracks.sum { |track| track.points.count }).to eq(points.size)
+          expect(user.tracks.maximum(:end_at).to_i).to eq(points.last.timestamp)
+        end
       end
     end
   end
