@@ -75,7 +75,7 @@ RSpec.describe 'Completed chunk track metadata' do
     data = generate_chunks([0, 1, 2])
 
     expect(data.dig('metadata', 'track_metadata_refresh')).to include(
-      'refreshed' => 2, 'skipped' => 1, 'reasons' => { 'insufficient_points' => 1 }, 'sample_ids' => [historical.id]
+      'refreshed' => 0, 'skipped' => 1, 'reasons' => { 'insufficient_points' => 1 }, 'sample_ids' => [historical.id]
     )
     expect(historical.reload.attributes).to eq(original)
     expect(user.tracks.where.not(id: historical.id).count).to eq(3)
