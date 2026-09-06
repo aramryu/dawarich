@@ -4,8 +4,8 @@ class Users::SessionsController < Devise::SessionsController
   include PendingImportClaimable
 
   before_action :load_invitation_context, only: [:new]
-  before_action :check_email_password_login_allowed, only: [:create]
   prepend_before_action :check_otp_required, only: [:create]
+  prepend_before_action :check_email_password_login_allowed, only: [:create]
 
   def new
     super
