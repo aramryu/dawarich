@@ -47,4 +47,38 @@ RSpec.describe 'Nominatim naming and stored geodata' do
       expect(Geocoding::ResultNormalizer.from_data(data)).to eq(properties: {}, coords: nil)
     end
   end
+
+  [
+    { 'hamlet' => 'Small Village', 'highway' => 'Old Road' },
+    { 'municipality' => 'Small Village', 'footway' => 'Old Road' }
+  ].each do |address_fields|
+    context "with fallback address fields #{address_fields.keys.join(', ')}" do
+      before do
+        data['address'] = address_fields.merge('house_number' => '51', 'state' => 'Test State', 'country' => 'Germany')
+      end
+
+      it 'uses the same address fields for existing-place naming and place search' do
+        Places::NameFetcher.new(place).call
+        formatted = Places::PhotonResultFormatter.call(result)
+
+        expect(place.reload.name).to eq('Old Road, 51, Small Village, Test State')
+        expect(place.city).to eq('Small Village')
+        expect(formatted).to include(street: 'Old Road', city: 'Small Village', housenumber: '51')
+      end
+
+      it 'keeps the same fallbacks when refreshing reverse-geocoded places' do
+        ReverseGeocoding::Places::FetchData.new(place.id).call
+
+        expect(place.reload.name).to eq('Old Road 51 (House)')
+        expect(place.city).to eq('Small Village')
+      end
+
+      it 'includes the same address and state in visit name suggestions' do
+        data.merge!('name' => 'Coffee Shop', 'type' => 'cafe', 'class' => 'amenity')
+
+        expect(Visits::Names::Suggester.new([double(geodata: data)]).call)
+          .to eq('Coffee Shop, Old Road, Small Village, Test State')
+      end
+    end
+  end
 end

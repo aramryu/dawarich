@@ -24,7 +24,7 @@ module Geocoding
     def from_data(data)
       return { properties: {}, coords: nil } unless data.is_a?(Hash)
 
-      data = data.deep_stringify_keys if data.is_a?(Hash)
+      data = data.deep_stringify_keys
 
       # FeatureCollection responses (raw HTTP body) unwrap to their first feature.
       return from_data(data['features'].first) if data['features'].is_a?(Array) && data['features'].first.is_a?(Hash)
@@ -47,7 +47,7 @@ module Geocoding
       end
 
       {
-        properties: {
+        properties: properties.merge(
           'name' => properties['name'].presence,
           'street' => properties['street'],
           'housenumber' => properties['housenumber'],
@@ -58,7 +58,7 @@ module Geocoding
           'osm_type' => properties['osm_type'],
           'osm_key' => properties['osm_key'] || properties['category'],
           'osm_value' => properties['osm_value'] || properties['result_type'] || properties['type']
-        },
+        ),
         coords: coords
       }
     end
@@ -70,9 +70,13 @@ module Geocoding
       {
         properties: {
           'name' => data['name'].presence,
-          'street' => address['road'] || address['pedestrian'] || address['footway'],
+          'address_name' => address_name(data, address),
+          'type' => data['type'] || data['category'] || data['class'],
+          'street' => address['road'] || address['pedestrian'] || address['highway'] || address['footway'],
           'housenumber' => address['house_number'],
-          'city' => address['city'] || address['town'] || address['village'] || address['municipality'],
+          'city' => address['city'] || address['town'] || address['village'] ||
+            address['hamlet'] || address['municipality'],
+          'state' => address['state'],
           'country' => address['country'],
           'postcode' => address['postcode'],
           'osm_id' => data['osm_id'],
@@ -84,6 +88,14 @@ module Geocoding
       }
     end
 
-    private_class_method :from_geojson, :from_flat
+    # Legacy reverse-geocoding label, kept separate from an explicit POI name:
+    # an address label must not become evidence that a visit was at a venue.
+    def address_name(data, address)
+      name = address[data['type']] if data['type']
+      name ||= data['display_name']&.split(',')&.first&.strip
+      name unless name == address['house_number']
+    end
+
+    private_class_method :from_geojson, :from_flat, :address_name
   end
 end

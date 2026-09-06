@@ -221,37 +221,17 @@ class ReverseGeocoding::Places::FetchData
     []
   end
 
-  # Normalizes Nominatim/LocationIQ response format to the GeoJSON-like
-  # structure (geometry + properties) that the rest of this service expects.
-  # Photon and Geoapify already return GeoJSON and pass through unchanged.
+  # Keep existing GeoJSON metadata intact. Flat responses use the shared
+  # field extraction, with this service's legacy address-label naming policy.
   def normalize_geocoder_data(data)
     return data if data.key?('geometry')
-    return data unless data['lat'] && data['lon']
 
-    address = data['address'] || {}
+    fields = Geocoding::ResultNormalizer.from_data(data)
+    properties = fields[:properties]
 
     {
-      'geometry' => {
-        'coordinates' => [data['lon'].to_f, data['lat'].to_f]
-      },
-      'properties' => {
-        'osm_id' => data['osm_id'],
-        'name' => extract_nominatim_name(data, address),
-        'osm_value' => data['type'],
-        'city' => address['city'] || address['town'] || address['village'] || address['hamlet'],
-        'country' => address['country'],
-        'postcode' => address['postcode'],
-        'street' => address['road'] || address['pedestrian'] || address['highway'],
-        'housenumber' => address['house_number']
-      }
+      'geometry' => { 'coordinates' => fields[:coords] },
+      'properties' => properties.merge('name' => properties['address_name'] || properties['name'])
     }
-  end
-
-  def extract_nominatim_name(data, address)
-    # Try the place type key first (e.g., address['restaurant'] for type=restaurant)
-    name = address[data['type']] if data['type']
-    # Fall back to first part of display_name (the most specific part)
-    name ||= data['display_name']&.split(',')&.first&.strip
-    name unless name == address['house_number']
   end
 end

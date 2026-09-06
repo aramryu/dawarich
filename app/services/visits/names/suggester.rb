@@ -33,7 +33,7 @@ module Visits
       attr_reader :points
 
       def extract_geocoded_points(points)
-        points.select { |p| p.geodata.present? && !p.geodata.empty? }
+        points.select { |p| p.geodata.is_a?(Hash) && p.geodata.present? }
       end
 
       def extract_features(geocoded_points)
@@ -44,41 +44,17 @@ module Visits
             geodata['features']
           elsif geodata['type'] == 'Feature' && geodata['properties'].is_a?(Hash)
             [geodata]
-          elsif flat_geodata?(geodata)
-            [pseudo_feature(geodata)]
           else
-            []
+            [normalized_feature(geodata)]
           end
         end.compact
       end
 
-      # Wraps Nominatim/LocationIQ flat geodata into the feature shape
-      # the name voting below expects.
-      def flat_geodata?(geodata)
-        geodata['address'].is_a?(Hash) || geodata['display_name'].present? || geodata['lat'].present?
-      end
+      def normalized_feature(geodata)
+        properties = Geocoding::ResultNormalizer.from_data(geodata)[:properties]
+        return nil if properties['name'].blank? || STREETISH_OSM_KEYS.include?(properties['osm_key'])
 
-      def pseudo_feature(geodata)
-        category = geodata['category'] || geodata['class']
-        return nil if geodata['name'].blank? || STREETISH_OSM_KEYS.include?(category)
-
-        address = geodata['address'] || {}
-
-        {
-          'type' => 'Feature',
-          'properties' => {
-            'type' => geodata['type'] || geodata['category'],
-            'name' => geodata['name'],
-            'osm_key' => category,
-            'osm_value' => geodata['type'] || geodata['addresstype'],
-            'street' => address['road'] || address['pedestrian'] || address['footway'],
-            'housenumber' => address['house_number'],
-            'city' => address['city'] || address['town'] || address['village'],
-            'state' => address['state'],
-            'country' => address['country'],
-            'postcode' => address['postcode']
-          }
-        }
+        { 'type' => 'Feature', 'properties' => properties }
       end
 
       def find_most_common_feature_type(features)

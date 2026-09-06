@@ -12,8 +12,7 @@ module Places
       ).first
       return nil if result.blank?
 
-      properties = result.data.is_a?(Hash) ? result.data['properties'] : nil
-      properties ||= Geocoding::ResultNormalizer.call(result)[:properties]
+      properties = Geocoding::ResultNormalizer.call(result)[:properties]
       return nil if properties.blank?
 
       name = ::Visits::Names::Builder.build_from_properties(properties)
