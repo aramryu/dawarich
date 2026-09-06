@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Map auto-centering keeps route points clear of the toolbar (#3342).
 
+- Legacy OwnTracks record imports preserve JSON values containing spaces. (#3553)
+- Restoring a user archive preserves structured geodata and raw point data. (#3552)
+- Polarsteps step-array exports with nested locations and numeric timestamps import their points correctly. (#3551)
+- Overlapping track-generation chunks preserve point ownership and include single-point journey endpoints. (#3550)
+- Historical Google Timeline activity hints are preserved when backfilling transportation modes. (#3548)
+- Cloud Lite users are only offered digest years available within their data window. (#3549)
+- Authentication and shared-link rate limits now apply consistently to requests with optional format suffixes. (#3547)
 - Upgrades rebuild invalid statistics indexes left by interrupted migrations and restore duplicate protection (#2700)
 - Browser and API password sign-in now respect OIDC-only configuration (#2961)
 
