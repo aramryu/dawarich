@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Place tag filters remain applied after returning to the map or reloading it (#3003, #2928).
 - Nominatim and LocationIQ place and visit naming handle provider responses consistently (#3316, #3260).
 - Self-hosted photo integrations accept container host-gateway addresses while Cloud restrictions stay in place (#3005).
 - Hebrew and Arabic map labels render in the correct reading order (#3530).
