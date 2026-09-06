@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Long country lists in Insights now scroll beside the calendar on desktop (#3412)
 - Remember me now persists across two-factor sign-in (#3416)
 - Family map now opens without an undefined theme error (#3415)
 
