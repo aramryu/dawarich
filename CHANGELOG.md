@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Password-protected shared links now unlock on self-hosted HTTP servers (#3314)
 - Reverse geocoding resolves countries sharing an ISO code correctly and repairs historical links (#3462)
 - Video export falls back when a reported codec cannot encode frames (#3436)
 - Location search results stay visible after selecting a result repeatedly (#3488)
