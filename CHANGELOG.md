@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Restoring a user archive preserves structured geodata and raw point data. (#3552)
 - Polarsteps step-array exports with nested locations and numeric timestamps import their points correctly. (#3551)
 - Overlapping track-generation chunks preserve point ownership and include single-point journey endpoints. (#3550)
 - Historical Google Timeline activity hints are preserved when backfilling transportation modes. (#3548)
