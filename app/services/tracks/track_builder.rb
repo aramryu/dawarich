@@ -57,7 +57,12 @@ module Tracks::TrackBuilder
   MAX_DISTANCE_METERS = 100_000_000
 
   def create_track_from_points(points, pre_calculated_distance, tracker_id: nil,
-                               skip_segment_detection: false)
+                               skip_segment_detection: false, orphan_only: false)
+    if orphan_only
+      return create_track_from_orphan_points(points, tracker_id: tracker_id,
+                                            skip_segment_detection: skip_segment_detection)
+    end
+
     return nil if points.size < 2
 
     resolved_tracker_id = tracker_id || points.first.tracker_id
@@ -101,6 +106,22 @@ module Tracks::TrackBuilder
     saved_track
   rescue ActiveRecord::RecordNotUnique => e
     reuse_existing_track(track, points, e)
+  end
+
+  # Buffered chunks can load the same points before either chunk commits.
+  # Lock in ID order, then re-read ownership under the lock before calculating
+  # metadata. Filtering only the final UPDATE would leave a phantom path/track.
+  # Boundary merges deliberately use the default path to move owned points.
+  def create_track_from_orphan_points(points, tracker_id:, skip_segment_detection:)
+    Point.transaction do
+      orphans = Point.where(user_id: user.id, id: points.map(&:id), track_id: nil)
+                     .order(:id).lock.to_a.sort_by { |point| [point.timestamp, point.id] }
+      next if orphans.size < 2
+
+      distance = Point.calculate_distance_for_array_geocoder(orphans, :m)
+      create_track_from_points(orphans, distance, tracker_id: tracker_id,
+                               skip_segment_detection: skip_segment_detection)
+    end
   end
 
   def reuse_existing_track(track, points, original_error)
