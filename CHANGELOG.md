@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Live map updates respect a selected historical date range (#3098).
+- Map auto-centering keeps route points clear of the toolbar (#3342).
 
 - Per-tracker migrations retry deferred track recalculation instead of reporting premature success. (#3556)
 - User archive restoration enforces ZIP extraction limits against actual output size. (#3555)
