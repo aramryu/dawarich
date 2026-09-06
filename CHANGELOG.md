@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Map auto-centering keeps route points clear of the toolbar (#3342).
+
 - Upgrades rebuild invalid statistics indexes left by interrupted migrations and restore duplicate protection (#2700)
 - Browser and API password sign-in now respect OIDC-only configuration (#2961)
 
