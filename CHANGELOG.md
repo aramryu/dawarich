@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [1.14.4] - 2026-09-06, Berlin
 
 ### Fixed
 
@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Statistics include valid segments crossing midnight and older calculations are scheduled for repair (#2843).
 - GPX imports work when the optional decimal elevation column is absent (#2721, #3046).
 - Map auto-centering keeps route points clear of the toolbar (#3342).
+- Simplified Chinese now covers the family, import, and integration flows added since 1.14.3.
 
 - Per-tracker migrations retry deferred track recalculation instead of reporting premature success. (#3556)
 - User archive restoration enforces ZIP extraction limits against actual output size. (#3555)
@@ -33,6 +34,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Browser and API password sign-in now respect OIDC-only configuration (#2961)
 
 - Renamed imports download using their current name and client-wrapped files retain their original format (#3455)
+- Import download preparation is translated in every supported language.
+- Google Phone Timeline imports preserve fractional altitude and accuracy values instead of turning them into out-of-range integers (#3370).
 - Password-protected shared links now unlock on self-hosted HTTP servers (#3314)
 - Reverse geocoding resolves countries sharing an ISO code correctly and repairs historical links (#3462)
 - Video export falls back when a reported codec cannot encode frames (#3436)
