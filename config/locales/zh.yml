@@ -1667,7 +1667,7 @@ zh:
         shared: 共享
         your_live_location_is_shared_via_a_public_link: 您的实时位置通过公共链接共享。
         make_something: 制作内容
-        make_something_intro: 链接会持续分享您的数据。以下方式生成一个文件，您发布一次即可，不会有任何内容保持共享状态。
+        make_something_intro: 链接会持续共享您的数据。下面这些方式则生成一个文件，您发布一次即可，不会有任何内容处于持续共享状态。
         make_video: 路线视频
         make_video_hint: 此时段的动画回放，格式为 MP4。
         make_poster: 地图海报
@@ -2608,7 +2608,7 @@ zh:
           one: 正在显示 <b>1</b> %{entry_name}
           other: 正在显示<b>全部 %{count}</b> %{entry_name}
       more_pages:
-        display_entries: "正在显示第 <b>%{first}&nbsp;-&nbsp;%{last}</b> %{entry_name}，共 <b>%{total}</b>"
+        display_entries: "正在显示第 <b>%{first}&nbsp;-&nbsp;%{last}</b> %{entry_name}，共 <b>%{total}</b> 条"
     application:
       full_title: "%{page_title} | %{app_name}"
       expired: 已过期
@@ -3867,7 +3867,7 @@ zh:
         editing_unavailable: 瓦片渲染下不可用，矢量瓦片没有可拖动的点
         failed: 无法加载地图瓦片。请尝试缩短日期范围，或在地图设置中关闭瓦片渲染。
         tracks_pending: 此视图中没有轨迹。瓦片渲染下的路线显示您生成的轨迹 — 请平移地图或扩大日期范围，如果您的历史记录是最近导入的，请稍后再查看。
-        splitting_unavailable: 瓦片渲染下不使用 — 路线跟随您生成的轨迹。
+        splitting_unavailable: 瓦片渲染下不生效 — 路线跟随您生成的轨迹。
         blockers:
           scratch: 刮刮地图
     replay:
@@ -4415,13 +4415,13 @@ zh:
       playback: 播放
       reset: 重置
       format: 格式
-      format_portrait: 故事 · 9:16（竖向）
+      format_portrait: 竖屏 · 9:16（竖向）
       format_landscape: 宽屏 · 16:9（横向）
       format_square: 信息流 · 1:1（方形）
       duration: 时长
       camera: 镜头
       camera_overview: 整条路线
-      camera_follow: 跟随线路
+      camera_follow: 跟随路线
       track_color: 路线颜色
       track_width: 路线宽度
       units: 单位
