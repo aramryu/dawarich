@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- User archive restoration enforces ZIP extraction limits against actual output size. (#3555)
+
 - Renamed imports download using their current name and client-wrapped files retain their original format (#3455)
 - Password-protected shared links now unlock on self-hosted HTTP servers (#3314)
 - Reverse geocoding resolves countries sharing an ISO code correctly and repairs historical links (#3462)
