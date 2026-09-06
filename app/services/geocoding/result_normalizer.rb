@@ -77,7 +77,7 @@ module Geocoding
           'postcode' => address['postcode'],
           'osm_id' => data['osm_id'],
           'osm_type' => data['osm_type'],
-          'osm_key' => data['category'],
+          'osm_key' => data['category'] || data['class'],
           'osm_value' => data['type'] || data['addresstype']
         },
         coords: coords

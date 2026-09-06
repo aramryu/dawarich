@@ -155,4 +155,25 @@ RSpec.describe Visits::Detection::PlaceAttributor do
     expect(result[:place]).to be_nil
     expect(result[:area]).to be_nil
   end
+  [
+    { 'type' => 'house', 'category' => 'building' },
+    { 'type' => 'residential', 'category' => 'highway', 'name' => 'Hauptstraße' },
+    { 'type' => 'residential', 'class' => 'highway', 'name' => 'Hauptstraße' }
+  ].each do |classification|
+    it "keeps flat #{classification.inspect} geodata as address evidence" do
+      data = classification.merge(
+        'lat' => lat0.to_s, 'lon' => lon0.to_s,
+        'address' => { 'road' => 'Hauptstraße', 'house_number' => '51', 'city' => 'Leipzig' }
+      )
+      points = create_list(:point, 2, user: user, geodata: data)
+      allow(Geocoder).to receive(:search).and_return([double(data: data)])
+
+      result = nil
+      expect { result = attribute(stay(point_ids: points.map(&:id))) }.not_to(change { Place.count })
+
+      expect(result[:evidence]).to eq(:address)
+      expect(result[:name]).to eq('Hauptstraße 51')
+      expect(result[:place]).to be_nil
+    end
+  end
 end

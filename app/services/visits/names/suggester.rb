@@ -4,6 +4,8 @@ module Visits
   module Names
     # Suggests names for places based on geodata from tracked points
     class Suggester
+      STREETISH_OSM_KEYS = %w[highway place boundary landuse natural waterway railway].freeze
+
       def initialize(points)
         @points = points
       end
@@ -57,14 +59,17 @@ module Visits
       end
 
       def pseudo_feature(geodata)
+        category = geodata['category'] || geodata['class']
+        return nil if geodata['name'].blank? || STREETISH_OSM_KEYS.include?(category)
+
         address = geodata['address'] || {}
 
         {
           'type' => 'Feature',
           'properties' => {
             'type' => geodata['type'] || geodata['category'],
-            'name' => geodata['name'].presence || [address['road'], address['house_number']].compact.join(' ').presence,
-            'osm_key' => geodata['category'],
+            'name' => geodata['name'],
+            'osm_key' => category,
             'osm_value' => geodata['type'] || geodata['addresstype'],
             'street' => address['road'] || address['pedestrian'] || address['footway'],
             'housenumber' => address['house_number'],
