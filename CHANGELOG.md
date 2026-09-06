@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Overlapping track-generation chunks preserve point ownership and include single-point journey endpoints. (#3550)
 - Historical Google Timeline activity hints are preserved when backfilling transportation modes. (#3548)
 - Cloud Lite users are only offered digest years available within their data window. (#3549)
 - Authentication and shared-link rate limits now apply consistently to requests with optional format suffixes. (#3547)
