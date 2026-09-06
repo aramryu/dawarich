@@ -34,11 +34,14 @@ module OidcConfig
 
     issuer = normalize_issuer(env['OIDC_ISSUER'].to_s)
 
-    if issuer != ''
-      config[:issuer] = issuer
+    config[:issuer] = issuer if issuer != ''
+
+    if issuer != '' && env['OIDC_DISCOVERY'].to_s.strip.downcase != 'false'
       config[:discovery] = true
     elsif env['OIDC_HOST'].to_s.strip != ''
       config[:client_options].merge!(manual_endpoints(env))
+      jwks_uri = env['OIDC_JWKS_URI'].to_s.strip
+      config[:client_options][:jwks_uri] = jwks_uri unless jwks_uri.empty?
     end
 
     config

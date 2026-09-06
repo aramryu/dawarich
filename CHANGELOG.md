@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Manual OIDC endpoints and signing keys can be configured without changing existing discovery setups (#3390).
 - Place tag filters remain applied after returning to the map or reloading it (#3003, #2928).
 - Nominatim and LocationIQ place and visit naming handle provider responses consistently (#3316, #3260).
 - Self-hosted photo integrations accept container host-gateway addresses while Cloud restrictions stay in place (#3005).
