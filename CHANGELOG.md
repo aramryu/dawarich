@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Hebrew and Arabic map labels render in the correct reading order (#3530).
 - Self-hosters can configure SMTP certificate verification for a local mail relay (#2681).
 - Live map updates respect a selected historical date range (#3098).
 - Statistics include valid segments crossing midnight and older calculations are scheduled for repair (#2843).
