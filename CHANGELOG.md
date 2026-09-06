@@ -4,6 +4,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.14.4] - 2026-09-06, Berlin
+
+### Fixed
+
+- Manual OIDC endpoints and signing keys can be configured without changing existing discovery setups.
+- Place tag filters remain applied after returning to the map or reloading it.
+- Nominatim and LocationIQ place and visit naming handle provider responses consistently.
+- Self-hosted photo integrations accept container host-gateway addresses while Cloud restrictions stay in place.
+- Hebrew and Arabic map labels render in the correct reading order.
+- Self-hosters can configure SMTP certificate verification for a local mail relay.
+- Live map updates respect a selected historical date range.
+- Statistics include valid segments crossing midnight and older calculations are scheduled for repair.
+- GPX imports work when the optional decimal elevation column is absent.
+- Map auto-centering keeps route points clear of the toolbar.
+- Simplified Chinese now covers the family, import, and integration flows added since 1.14.3.
+
+- Per-tracker migrations retry deferred track recalculation instead of reporting premature success.
+- User archive restoration enforces ZIP extraction limits against actual output size.
+- Family invitation acceptance uses the current subscription period even when background synchronization is delayed.
+- Legacy OwnTracks record imports preserve JSON values containing spaces.
+- Restoring a user archive preserves structured geodata and raw point data.
+- Polarsteps step-array exports with nested locations and numeric timestamps import their points correctly.
+- Overlapping track-generation chunks preserve point ownership and include single-point journey endpoints.
+- Historical Google Timeline activity hints are preserved when backfilling transportation modes.
+- Cloud Lite users are only offered digest years available within their data window.
+- Authentication and shared-link rate limits now apply consistently to requests with optional format suffixes.
+- Upgrades rebuild invalid statistics indexes left by interrupted migrations and restore duplicate protection.
+- Browser and API password sign-in now respect OIDC-only configuration.
+
+- Renamed imports download using their current name and client-wrapped files retain their original format.
+- Import download preparation is translated in every supported language.
+- Google Phone Timeline imports preserve fractional altitude and accuracy values instead of turning them into out-of-range integers.
+- Password-protected shared links now unlock on self-hosted HTTP servers.
+- Reverse geocoding resolves countries sharing an ISO code correctly and repairs historical links.
+- Video export falls back when a reported codec cannot encode frames.
+- Location search results stay visible after selecting a result repeatedly.
+- Existing users can link an OIDC account when automatic registration is disabled.
+- Long country lists in Insights now scroll beside the calendar on desktop.
+- Remember me now persists across two-factor sign-in.
+- Family map now opens without an undefined theme error.
+
 ## [1.14.3] - 2026-09-05, Berlin
 
 ### Added

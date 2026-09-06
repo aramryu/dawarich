@@ -36,7 +36,6 @@ class GoogleMaps::PhoneTakeoutImporter
     parser = Oj::Parser.new(:validate)
     File.open(path, 'rb') { |io| parser.load(io) }
   rescue EncodingError, JSON::ParserError
-    @legacy_parser_required = true
     File.open(path, 'rb') { |io| Oj.saj_parse(nil, io) }
   end
 
@@ -58,11 +57,9 @@ class GoogleMaps::PhoneTakeoutImporter
     )
 
     File.open(path, 'rb') do |io|
-      if @legacy_parser_required
-        Oj.saj_parse(handler, io)
-      else
-        Oj::Parser.new(:saj, handler:).load(io)
-      end
+      # Oj 3.17's newer SAJ parser can lose the decimal point in long 0.xxx
+      # literals. The original streaming API preserves those numeric values.
+      Oj.saj_parse(handler, io)
     end
   end
 
