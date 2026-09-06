@@ -64,13 +64,15 @@ RSpec.describe 'Daily distance includes segments crossing midnight' do
     end
   end
 
-  it 'schedules repair for a previously current calculation version' do
-    user.points.update_all(created_at: 1.day.ago)
-    user.update_column(:stats_swept_at, Time.current)
-    create(:stat, user: user, year: 2026, month: 5, calculation_version: 1)
-      .update_column(:updated_at, 1.day.ago)
+  [1, 2].each do |version|
+    it "schedules repair for historical calculation version #{version}" do
+      user.points.update_all(created_at: 1.day.ago)
+      user.update_column(:stats_swept_at, Time.current)
+      create(:stat, user: user, year: 2026, month: 5, calculation_version: version)
+        .update_column(:updated_at, 1.day.ago)
 
-    expect { Stats::BulkCalculator.new(user.id).call }
-      .to have_enqueued_job(Stats::CalculatingJob).with(user.id, 2026, 5, notify_on_failure: false)
+      expect { Stats::BulkCalculator.new(user.id).call }
+        .to have_enqueued_job(Stats::CalculatingJob).with(user.id, 2026, 5, notify_on_failure: false)
+    end
   end
 end
