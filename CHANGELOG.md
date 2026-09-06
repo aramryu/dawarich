@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Video export falls back when a reported codec cannot encode frames (#3436)
 - Location search results stay visible after selecting a result repeatedly (#3488)
 - Existing users can link an OIDC account when automatic registration is disabled (#3474)
 - Long country lists in Insights now scroll beside the calendar on desktop (#3412)
