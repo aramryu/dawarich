@@ -69,10 +69,6 @@ class ReverseGeocoding::Points::FetchData
     ExceptionReporter.call(e)
   end
 
-  # ISO code first: it is naming-scheme-proof, where the name match needs the
-  # alias map to bridge geocoder names and the seeded Natural Earth ones.
-  # Geocoder's Result::Base#country_code raises for lookups that don't carry
-  # a code, hence the rescue.
   def find_country(response)
     code = begin
       response.country_code if response.respond_to?(:country_code)
@@ -80,8 +76,9 @@ class ReverseGeocoding::Points::FetchData
       nil
     end
 
-    country = Country.find_by(iso_a2: code.upcase) if code.present?
-    country ||= Country.matching_name(response.country)
+    country = Country.matching_name(response.country)
+    country = nil if code.present? && country&.iso_a2 != code.upcase
+    country ||= Country.find_by(iso_a2: code.upcase) if code.present?
 
     if country.nil?
       Rails.logger.warn(
