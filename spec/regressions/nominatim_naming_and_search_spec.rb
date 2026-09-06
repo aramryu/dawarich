@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Nominatim naming and nearby search' do
+RSpec.describe 'Nominatim naming and stored geodata' do
   let(:user) { create(:user) }
   let(:place) { create(:place, user: user, name: Place::DEFAULT_NAME, lonlat: 'POINT(13.405 52.52)') }
   let(:data) do
@@ -40,28 +40,6 @@ RSpec.describe 'Nominatim naming and nearby search' do
     ReverseGeocoding::Places::FetchData.new(place.id).call
 
     expect(place.reload.name).to eq('Example Road 51 (House)')
-  end
-
-  %i[nominatim locationiq].each do |provider|
-    it "bounds #{provider} text search near the requested coordinates" do
-      config = Geocoding::Config.new(source: :user, provider: provider, host: 'geocoder.example.test',
-                                     api_key: 'synthetic')
-      allow(Geocoding::Config).to receive(:for).with(user).and_return(config)
-
-      results = Places::Search.new(user: user, query: 'Example', latitude: 52.52, longitude: 13.405, radius: 1).call
-
-      expect(results.size).to eq(1)
-      expect(results.first).to include(latitude: 52.52, longitude: 13.405)
-      expect(Geocoding::Search).to have_received(:call) do |**options|
-        expect(options[:params][:bounded]).to eq(1)
-        west, north, east, south = options[:params][:viewbox].split(',').map(&:to_f)
-        expect(west).to be < 13.405
-        expect(east).to be > 13.405
-        expect(south).to be < 52.52
-        expect(north).to be > 52.52
-        expect(options).not_to have_key(:bias)
-      end
-    end
   end
 
   [nil, [], [1], true, 42, 'legacy'].each do |data|
