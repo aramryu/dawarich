@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Map auto-centering keeps route points clear of the toolbar (#3342).
+
 - Per-tracker migrations retry deferred track recalculation instead of reporting premature success. (#3556)
 - User archive restoration enforces ZIP extraction limits against actual output size. (#3555)
 - Family invitation acceptance uses the current subscription period even when background synchronization is delayed. (#3554)
