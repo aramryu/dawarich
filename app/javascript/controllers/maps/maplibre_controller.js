@@ -351,6 +351,12 @@ export default class extends Controller {
       reachesNow: loadEnd !== null && loadEnd >= Date.now(),
     }
 
+    if (this.settings.placesEnabled) {
+      await this.placesManager.initializePlaceTagFilters({
+        reloadPlaces: false,
+      })
+    }
+
     this.loadMapData().then(() => {
       if (this.settings?.familyEnabled) {
         this.loadFamilyMembers()
