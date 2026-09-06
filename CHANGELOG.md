@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Password-protected shared links now unlock on self-hosted HTTP servers (#3314)
+- Reverse geocoding resolves countries sharing an ISO code correctly and repairs historical links (#3462)
+- Video export falls back when a reported codec cannot encode frames (#3436)
+- Location search results stay visible after selecting a result repeatedly (#3488)
+- Existing users can link an OIDC account when automatic registration is disabled (#3474)
+- Long country lists in Insights now scroll beside the calendar on desktop (#3412)
+- Remember me now persists across two-factor sign-in (#3416)
+- Family map now opens without an undefined theme error (#3415)
 
 ## [1.14.3] - 2026-09-05, Berlin
 
