@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Family invitation acceptance uses the current subscription period even when background synchronization is delayed. (#3554)
 - Legacy OwnTracks record imports preserve JSON values containing spaces. (#3553)
 - Restoring a user archive preserves structured geodata and raw point data. (#3552)
 - Polarsteps step-array exports with nested locations and numeric timestamps import their points correctly. (#3551)
