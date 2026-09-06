@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Manual OIDC endpoints and signing keys can be configured without changing existing discovery setups (#3390).
 
+- Per-tracker migrations retry deferred track recalculation instead of reporting premature success. (#3556)
+- User archive restoration enforces ZIP extraction limits against actual output size. (#3555)
+- Family invitation acceptance uses the current subscription period even when background synchronization is delayed. (#3554)
 - Legacy OwnTracks record imports preserve JSON values containing spaces. (#3553)
 - Restoring a user archive preserves structured geodata and raw point data. (#3552)
 - Polarsteps step-array exports with nested locations and numeric timestamps import their points correctly. (#3551)
