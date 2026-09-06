@@ -51,8 +51,14 @@ const context = {
   applySpeedColors: (value) => value,
 }
 vm.createContext(context)
-const basemapSource = await readFile(path.join(repoRoot, "app/javascript/maps_maplibre/utils/basemap_url.js"), "utf8")
-vm.runInContext(basemapSource.replaceAll("export function ", "function "), context)
+const basemapSource = await readFile(
+  path.join(repoRoot, "app/javascript/maps_maplibre/utils/basemap_url.js"),
+  "utf8",
+)
+vm.runInContext(
+  basemapSource.replaceAll("export function ", "function "),
+  context,
+)
 vm.runInContext(settingsManagerSource, context)
 vm.runInContext(dataLoaderSource, context)
 
