@@ -8,42 +8,42 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-- Manual OIDC endpoints and signing keys can be configured without changing existing discovery setups (#3390).
-- Place tag filters remain applied after returning to the map or reloading it (#3003, #2928).
-- Nominatim and LocationIQ place and visit naming handle provider responses consistently (#3316, #3260).
-- Self-hosted photo integrations accept container host-gateway addresses while Cloud restrictions stay in place (#3005).
-- Hebrew and Arabic map labels render in the correct reading order (#3530).
-- Self-hosters can configure SMTP certificate verification for a local mail relay (#2681).
-- Live map updates respect a selected historical date range (#3098).
-- Statistics include valid segments crossing midnight and older calculations are scheduled for repair (#2843).
-- GPX imports work when the optional decimal elevation column is absent (#2721, #3046).
-- Map auto-centering keeps route points clear of the toolbar (#3342).
+- Manual OIDC endpoints and signing keys can be configured without changing existing discovery setups.
+- Place tag filters remain applied after returning to the map or reloading it.
+- Nominatim and LocationIQ place and visit naming handle provider responses consistently.
+- Self-hosted photo integrations accept container host-gateway addresses while Cloud restrictions stay in place.
+- Hebrew and Arabic map labels render in the correct reading order.
+- Self-hosters can configure SMTP certificate verification for a local mail relay.
+- Live map updates respect a selected historical date range.
+- Statistics include valid segments crossing midnight and older calculations are scheduled for repair.
+- GPX imports work when the optional decimal elevation column is absent.
+- Map auto-centering keeps route points clear of the toolbar.
 - Simplified Chinese now covers the family, import, and integration flows added since 1.14.3.
 
-- Per-tracker migrations retry deferred track recalculation instead of reporting premature success. (#3556)
-- User archive restoration enforces ZIP extraction limits against actual output size. (#3555)
-- Family invitation acceptance uses the current subscription period even when background synchronization is delayed. (#3554)
-- Legacy OwnTracks record imports preserve JSON values containing spaces. (#3553)
-- Restoring a user archive preserves structured geodata and raw point data. (#3552)
-- Polarsteps step-array exports with nested locations and numeric timestamps import their points correctly. (#3551)
-- Overlapping track-generation chunks preserve point ownership and include single-point journey endpoints. (#3550)
-- Historical Google Timeline activity hints are preserved when backfilling transportation modes. (#3548)
-- Cloud Lite users are only offered digest years available within their data window. (#3549)
-- Authentication and shared-link rate limits now apply consistently to requests with optional format suffixes. (#3547)
-- Upgrades rebuild invalid statistics indexes left by interrupted migrations and restore duplicate protection (#2700)
-- Browser and API password sign-in now respect OIDC-only configuration (#2961)
+- Per-tracker migrations retry deferred track recalculation instead of reporting premature success.
+- User archive restoration enforces ZIP extraction limits against actual output size.
+- Family invitation acceptance uses the current subscription period even when background synchronization is delayed.
+- Legacy OwnTracks record imports preserve JSON values containing spaces.
+- Restoring a user archive preserves structured geodata and raw point data.
+- Polarsteps step-array exports with nested locations and numeric timestamps import their points correctly.
+- Overlapping track-generation chunks preserve point ownership and include single-point journey endpoints.
+- Historical Google Timeline activity hints are preserved when backfilling transportation modes.
+- Cloud Lite users are only offered digest years available within their data window.
+- Authentication and shared-link rate limits now apply consistently to requests with optional format suffixes.
+- Upgrades rebuild invalid statistics indexes left by interrupted migrations and restore duplicate protection.
+- Browser and API password sign-in now respect OIDC-only configuration.
 
-- Renamed imports download using their current name and client-wrapped files retain their original format (#3455)
+- Renamed imports download using their current name and client-wrapped files retain their original format.
 - Import download preparation is translated in every supported language.
-- Google Phone Timeline imports preserve fractional altitude and accuracy values instead of turning them into out-of-range integers (#3370).
-- Password-protected shared links now unlock on self-hosted HTTP servers (#3314)
-- Reverse geocoding resolves countries sharing an ISO code correctly and repairs historical links (#3462)
-- Video export falls back when a reported codec cannot encode frames (#3436)
-- Location search results stay visible after selecting a result repeatedly (#3488)
-- Existing users can link an OIDC account when automatic registration is disabled (#3474)
-- Long country lists in Insights now scroll beside the calendar on desktop (#3412)
-- Remember me now persists across two-factor sign-in (#3416)
-- Family map now opens without an undefined theme error (#3415)
+- Google Phone Timeline imports preserve fractional altitude and accuracy values instead of turning them into out-of-range integers.
+- Password-protected shared links now unlock on self-hosted HTTP servers.
+- Reverse geocoding resolves countries sharing an ISO code correctly and repairs historical links.
+- Video export falls back when a reported codec cannot encode frames.
+- Location search results stay visible after selecting a result repeatedly.
+- Existing users can link an OIDC account when automatic registration is disabled.
+- Long country lists in Insights now scroll beside the calendar on desktop.
+- Remember me now persists across two-factor sign-in.
+- Family map now opens without an undefined theme error.
 
 ## [1.14.3] - 2026-09-05, Berlin
 
