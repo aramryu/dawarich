@@ -32,6 +32,7 @@ class Users::SessionsController < Devise::SessionsController
 
     session[:otp_user_id] = user.id
     session[:otp_challenge_at] = Time.current.to_i
+    session[:otp_remember_me] = params.dig(:user, :remember_me) == '1'
     self.resource = user
     render :otp_challenge, status: :unprocessable_entity
   end
