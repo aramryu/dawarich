@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Live map updates respect a selected historical date range (#3098).
+- Statistics include valid segments crossing midnight and older calculations are scheduled for repair (#2843).
+- GPX imports work when the optional decimal elevation column is absent (#2721, #3046).
 - Map auto-centering keeps route points clear of the toolbar (#3342).
 
 - Per-tracker migrations retry deferred track recalculation instead of reporting premature success. (#3556)
