@@ -201,6 +201,18 @@ zh:
       status: 状态
       created: 已创建
   families:
+    getting_started:
+      members_lose_access_when_your_plan_ends: 在您的计划有效期内，您添加的所有成员都拥有完整访问权限。计划结束后，他们的权限也会随之结束。
+      invite_title: 添加第一位家庭成员
+      invite_body: 您的家庭已就绪。您添加的每个人都能看到其他成员的位置，同时各自保留自己的私人地图。
+      seats: 已使用 %{used}/%{total} 个席位
+      trial_ends_on: 您的家庭计划试用将于 %{date} 结束
+      sharing_title: 开始共享您的位置
+      sharing_body: 您的家庭成员还看不到您。请在下方开启共享，然后安装 App，让您的位置保持更新。
+      app_title: 获取 App
+      app_body: 位置共享在您随身携带的手机上效果最佳。
+      email_address: 邮箱
+      invite: 邀请
     location_sharing_toggle:
       live_location: 实时位置：
       always: 始终
@@ -379,6 +391,21 @@ zh:
         decline: 拒绝
         back_to_family: 返回家庭
   family_mailer:
+    plan_lapsed:
+      the_family_plan_has_ended: 家庭计划已结束
+      hi: 您好
+      family_plan_ended_html: Dawarich 中 <strong>%{family}</strong> 的家庭计划已失效，因此您通过该计划获得的访问权限已结束。
+      family_plan_ended_text: Dawarich 中 %{family} 的家庭计划已失效，因此您通过该计划获得的访问权限已结束。
+      what_this_means: 这意味着什么
+      your_data_is_safe_and_still_yours: 您的数据安全无虞，依然属于您。
+      you_can_no_longer_see_your_family_on_the_map: 您将无法再在地图上看到家庭成员。
+      your_location_is_no_longer_shared_with_them: 您的位置将不再与他们共享。
+      tracking_and_uploads_are_paused_until_a_plan_is_active: 在计划重新生效前，位置记录和上传将暂停。
+      what_you_can_do: 您可以这样做：
+      ask_the_owner_to_renew_html: 请 %{owner} 续订家庭计划，或自行开通计划。
+      ask_the_owner_to_renew_text: 请 %{owner} 续订家庭计划，或自行开通计划。
+      get_your_own_plan: 开通自己的计划
+      nothing_is_deleted_your_history_is_waiting_when_you_come_back: 不会删除任何数据。您的历史记录会一直保留，等您回来。
     invitation:
       you_ve_been_invited_to_join_a_family: 您已被邀请加入家庭！
       hi_there: 您好！
@@ -474,6 +501,7 @@ zh:
     extraction_card:
       additional_data: 附加数据
       this_import_format_doesn_t_carry_visits_named_places_or: 此导入格式不包含到访记录、命名地点或交通方式，因此无需提取其他内容。
+      this_gpx_file_holds_no_waypoints: 此 GPX 文件仅包含已记录的轨迹点，因此没有可作为地点导入的航点。
       extracted: 已提取
       visits: 到访记录、
       places: 地点、
@@ -805,6 +833,8 @@ zh:
       dawarich_logo: Dawarich 徽标
   map:
     onboarding_modal:
+      add_your_family_and_see_each_other_on_the_map: 添加家人，在地图上互相查看位置。
+      invite_your_family: 邀请您的家人
       welcome_to_dawarich: 欢迎使用 Dawarich！
       your_map_starts_with_your_next_step_literally: 您的地图从您的下一步开始 — 字面意义上的。
       start_tracking_now: 立即开始记录
@@ -1465,6 +1495,16 @@ zh:
         the_base_url_of_your_airtrail_instance_your_flights_are: AirTrail 实例的基础 URL。您的航班在地图上显示为弧线。
         airtrail_api_key: AirTrail API 密钥
         create_an_api_key_in_airtrail_under_settings_rarr_security: 在 AirTrail 的“设置 → 安全”中创建 API 密钥。
+        teslamate_sync_help: 已完成的驾驶记录每天自动同步一次。进行中的驾驶记录和停放位置无法通过 TeslaMateApi 获取。
+        sync_teslamate_drives: 同步 TeslaMateApi 驾驶记录
+        teslamate_authentication_help: 若反向代理有保护，请使用 HTTP Basic 认证；若代理或分支版本支持，则使用 Bearer 令牌。TeslaMateApi 官方的读取接口不使用其 API_TOKEN。
+        teslamate_api_token: Bearer 令牌（可选）
+        teslamate_password: HTTP Basic 密码（可选）
+        teslamate_username: HTTP Basic 用户名（可选）
+        teslamate_setup_guide: 设置指南（TeslaMateApi v1.25.0 或更高版本）
+        the_base_url_of_your_teslamateapi_instance: 您的 TeslaMateApi 实例的基础 URL。
+        teslamate_url: TeslaMateApi URL
+        teslamate_integration: TeslaMateApi 集成
         last_synced: 上次同步：
         connected_accounts: 已连接帐户
         you_ve_connected_your_account_using_the_following_oauth_provider: 您已使用以下 OAuth 提供商连接您的帐户：
@@ -1482,6 +1522,7 @@ zh:
           immich: Immich
           photoprism: PhotoPrism
           airtrail: AirTrail
+          teslamate: TeslaMateApi
         status_connected: 已连接
         status_failed: 上次连接尝试失败
     subscriptions:
@@ -1959,6 +2000,8 @@ zh:
       available_on_pro: 在 Pro 上可用
       upgrade_to_pro: 升级到 Pro
     month:
+      from_airtrail_not_counted_in_distance: 来自 AirTrail，不计入距离
+      flight_distance: 飞行距离
       monthly_digest: 每月摘要
       share: 共享
       distance_traveled: 行驶距离
@@ -2010,6 +2053,8 @@ zh:
       distance: 距离
       countries_count_countries_cities_count_cities: "%{countries_count} 个国家/地区、%{cities_count} 个城市"
     public_month:
+      from_airtrail_not_counted_in_distance: 来自 AirTrail，不计入距离
+      flight_distance: 飞行距离
       monthly_digest: 每月摘要
       distance_traveled: 行驶距离
       total_distance_for_this_month: 本月总距离
@@ -2290,6 +2335,7 @@ zh:
           other: "%{count} 城市"
     digests_mailer:
       monthly_digest:
+        flights: 航班
         your: 您的
         in_review: 回顾
         here_s_what_your_location_history_looked_like_last_month: 以下是您上个月的位置记录。
@@ -2559,6 +2605,7 @@ zh:
       source:
         manual: 手动
         photon: Photon
+        gpx_waypoint: GPX 航点
     shared_link:
       resource_type:
         trip: 行程
@@ -2771,6 +2818,7 @@ zh:
         areas:
           area_was_successfully_deleted: 区域已成功删除
         auth:
+          account_pending_deletion: 使用此邮箱的帐户正在删除中。请等待删除完成后重试。
           apple:
             apple_has_not_verified_this_email_sign_in_with_password: Apple 尚未验证此邮箱。请使用密码登录，并在设置中完成关联。
             this_email_already_has_a_dawarich_account_we_sent_a: 此邮箱已有 Dawarich 帐户。我们已向该邮箱发送确认链接，点击即可关联您的 Apple ID。
@@ -2900,6 +2948,9 @@ zh:
           failed_to_delete_visit: 删除到访记录失败
           visit_not_found: 未找到到访记录
           failed_to_create_visit: 无法创建到访记录
+          too_many_visits_maximum_is_limit_per_batch: 选择的到访记录过多，每批最多 %{limit} 条
+          invalid_visit_payload: 到访条目必须是一个对象
+          no_visits_provided: 未提供任何到访记录
       record_not_found: 未找到记录
       complete_your_subscription_to_continue: 请先完成订阅，然后继续。
       this_feature_requires_a_pro_plan: 此功能需要 Pro 计划。
@@ -3137,6 +3188,7 @@ zh:
         sign_in_with_apple_was_cancelled: Apple 登录已取消。
         sign_in_failed: Apple 登录失败：%{message}
         email_not_verified: 您的 Apple ID 邮箱尚未验证。请先在 Apple 处完成验证，然后重试。
+        account_pending_deletion: 使用此邮箱的帐户正在删除中。请等待删除完成后重试。
         missing_email: Apple 这次没有将您的邮箱分享给我们，我们也找不到您现有的帐户。请访问 appleid.apple.com → 使用
           Apple 登录 → Dawarich → 停止使用“使用 Apple 登录”，然后重试。
         did_not_complete: Apple 登录未完成。请重试。
@@ -3162,6 +3214,7 @@ zh:
         oidc_account_requires_administrator: 您必须先由管理员创建帐户，才能使用 OIDC 登录。请联系您的管理员。
         account_creation_failed: 无法创建您的帐户。请重试或联系支持人员。
         email_not_verified: 您的 %{provider} 邮箱尚未验证。请先在服务提供方完成验证，然后重试，或使用现有密码登录。
+        account_pending_deletion: 使用此邮箱的帐户正在删除中。请等待删除完成后重试。
       otp_challenge:
         session_expired_please_sign_in_again: 会话已过期。请重新登录。
         signed_in_successfully: 登录成功。
@@ -3226,6 +3279,8 @@ zh:
     declined: 已拒绝
   mailers:
     family:
+      plan_lapsed:
+        subject: 👪 %{family} 的家庭计划已结束
       invitation:
         subject: 🎉 您已被邀请加入 Dawarich 上的 %{family}！
       location_request:
@@ -3280,6 +3335,11 @@ zh:
     trip:
       must_be_after_start_date: 必须在开始日期之后
   services:
+    tesla_mate:
+      connection_tester:
+        teslamate_connection_verified: TeslaMateApi 连接已验证
+        teslamate_url_is_missing: 缺少 TeslaMateApi URL
+        teslamate_connection_failed_message: TeslaMateApi 连接失败：%{message}
     air_trail:
       connection_tester:
         airtrail_connection_verified: AirTrail 连接已验证
@@ -3305,6 +3365,10 @@ zh:
         export_name_failed_message_stacktrace_n: 导出“%{name}”失败：%{message}，堆栈跟踪：%{backtrace}
         unsupported_file_format: 不支持的文件格式：%{format}
     families:
+      auto_create:
+        default_name: 我的家庭
+        notification_title: 您的家庭计划已就绪
+        notification_content: 我们已为您创建“%{name}”。最多可邀请 %{seats} 人，之后你们就能在地图上互相看到位置。
       accept_invitation:
         you_must_leave_your_current_family_before_joining_a_new: 您必须先离开当前的家庭，然后才能加入新的家庭。
         this_invitation_is_no_longer_valid_or_has_expired: 此邀请不再有效或已过期。
@@ -3395,6 +3459,13 @@ zh:
         immich_api_key_missing_permission_asset_view: Immich API 密钥缺少权限：asset.view
         immich_thumbnail_check_failed_code: Immich 缩略图检查失败：%{code}
       enrich_photos:
+        unconfirmed: 仍未确认的位置更新：%{count} 项。Immich 可能仍在处理这些更新。请检查其元数据任务，以及 API 密钥的 asset.read 权限。对于外部库，请确认 Immich 能够写入 XMP 附属文件：只读挂载或文件权限可能导致无法保存。问题解决后，请重新扫描再重试。
+        confirmed:
+          one: 已确认 %{count} 张照片的保存位置。
+          other: 已确认 %{count} 张照片的保存位置。
+        result_title: Immich 位置更新结果
+        checking: 已向 Immich 提交 %{count} 项位置更新。正在检查坐标是否已保存。
+        checking_title: 正在检查 Immich 位置更新
         http_code_message: HTTP %{code}：%{message}
       enrich_scan:
         failed_to_fetch_photos_from_immich: 无法从 Immich 获取照片
@@ -3415,6 +3486,9 @@ zh:
     imports:
       bulk_insertable:
         importer_name_import_error: "%{importer_name} 导入错误"
+      geojson_importer:
+        points_skipped_title: 导入时已跳过无时间戳的轨迹点
+        points_skipped: 您的文件 %{name} 中有 %{skipped} 个轨迹点没有时间戳，已被跳过。GeoJSON 轨迹点需要 "timestamp" 属性，或提供第四个坐标值 [lon, lat, altitude, time]，才能被导入。
       create:
         import_post_processing_incomplete: 导入后处理未完成
         import_completed_with_no_new_points: 导入已完成，无新轨迹点
@@ -3422,6 +3496,12 @@ zh:
         import_failed: 导入失败
         zero_points_with_timestamps: 您的文件 %{name} 导入了 0 个轨迹点。未找到带有时间戳的轨迹点。GPX 和 KML
           导入要求每个坐标都包含 &lt;time&gt;/&lt;when&gt; 值。
+        zero_points_route_only:
+          one: 您的文件 %{name} 导入了 0 个轨迹点。它包含一条有 %{count} 个点的规划路线，但没有已记录的轨迹。Dawarich 导入的是已记录的轨迹，而非规划路线。
+          other: 您的文件 %{name} 导入了 0 个轨迹点。它包含一条有 %{count} 个点的规划路线，但没有已记录的轨迹。Dawarich 导入的是已记录的轨迹，而非规划路线。
+        zero_points_waypoints_only:
+          one: 您的文件 %{name} 导入了 0 个轨迹点。它包含 %{count} 个航点（收藏或已保存的地点），但没有已记录的轨迹。Dawarich 目前仅导入轨迹。
+          other: 您的文件 %{name} 导入了 0 个轨迹点。它包含 %{count} 个航点（收藏或已保存的地点），但没有已记录的轨迹。Dawarich 目前仅导入轨迹。
         zero_points: 您的文件 %{name} 导入了 0 个轨迹点。未在该文件中找到新的轨迹点。
         import_failed_self_hosted: 导入“%{name}”失败：%{message}，堆栈跟踪：%{backtrace}
         import_failed_cloud: 导入“%{name}”失败，请通过 hi@dawarich.com 联系我们
@@ -3590,6 +3670,10 @@ zh:
         weekday_preference: 您在工作日出行的次数比周末多
         with_suggestion: "%{insight} %{suggestion}"
   jobs:
+    tesla_mate:
+      sync_job:
+        teslamate_sync_failed: TeslaMateApi 同步失败
+        your_teslamate_sync_failed: 您的 TeslaMateApi 同步失败，错误：%{message}。请检查集成设置后重试。
     air_trail:
       import_flights_job:
         airtrail_sync_failed: AirTrail 同步失败
@@ -3729,6 +3813,7 @@ zh:
       failed_to_reload_routes: 无法重新加载路线
       failed_to_load_scratch_layer: 无法加载刮刮图层
       failed_to_load_photos: 无法加载照片
+      some_photo_sources_unavailable: 部分照片来源不可用：%{sources}
       failed_to_load_areas: 无法加载区域
       failed_to_load_tracks: 无法加载轨迹
       failed_to_load_flights: 无法加载航班
@@ -4100,6 +4185,7 @@ zh:
       no_matches: 在容差范围内未找到匹配项
       open_in_immich: 在 Immich 中打开
       partially_enriched: 已为 %{enriched} 张照片补充 GPS 坐标，另有 %{failed} 张失败。
+      pending_enrichment: 已向 Immich 提交 %{count} 项位置更新，其中 %{failed} 项发送失败。核对已保存的坐标后，您将收到通知。
       photos_without_gps:
         one: "%{count} 张没有 GPS 坐标的照片"
         other: "%{count} 张没有 GPS 坐标的照片"
@@ -4265,6 +4351,7 @@ zh:
       loading: 正在加载…
       loading_tracks: 正在加载新范围的轨迹…
       no_location_data: 此日期范围内没有位置数据 — 请在顶部的日期栏中选择包含轨迹的日期范围。
+      gallery_without_flights: 图库海报使用 GPS 路线，不叠加航班。下载将保留当前视图。
       no_tracks_in_frame: 画面中没有轨迹 — 请移动或缩放地图，让路线进入画面后保存到图库。
       queued: 已排队 — 正在服务器端渲染，完成后将出现在“最近的海报”中…
       rendering: 正在渲染 %{width} × %{height}px…
