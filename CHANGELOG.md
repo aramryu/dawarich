@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Authentication and shared-link rate limits now apply consistently to requests with optional format suffixes. (#3547)
+
 - Renamed imports download using their current name and client-wrapped files retain their original format (#3455)
 - Password-protected shared links now unlock on self-hosted HTTP servers (#3314)
 - Reverse geocoding resolves countries sharing an ISO code correctly and repairs historical links (#3462)
